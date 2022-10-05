@@ -18,7 +18,7 @@ static char *code_format =
     "}";
 
 static int buf_num = 0;
-
+static const int MAXLEN = 1024;
 static void copy2buf(const char *str)
 {
   memcpy(buf + buf_num, str, strlen(str));
