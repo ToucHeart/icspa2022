@@ -126,7 +126,7 @@ static int cmd_si(char *args)
 }
 static int cmd_test(char *args)
 {
-  FILE *fp = fopen("/home/mxj/ics2021/nemu/tools/gen-expr/build/input.txt", "r");
+  FILE *fp = fopen("/home/mxj/ics2022/nemu/tools/gen-expr/build/input.txt", "r");
   if (!fp)
   {
     perror("Failed to open input file");
