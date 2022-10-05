@@ -126,11 +126,6 @@ static int cmd_si(char *args)
 }
 static int cmd_test(char *args)
 {
-  int a = system("/home/mxj/ics2022/nemu/tools/gen-expr/build/test");
-  if (a != 0)
-  {
-    printf("run test failed\n");
-  }
   FILE *fp = fopen("/home/mxj/ics2022/nemu/tools/gen-expr/build/input.txt", "r");
   if (!fp)
   {
