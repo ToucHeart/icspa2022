@@ -227,7 +227,7 @@ static int get_priority(int op)
 word_t eval(int p, int q, bool *success)
 {
 
-#if 0
+#if 1
   printf("eval:  ");
   for (int i = p; i <= q; i++)
   {
@@ -299,11 +299,11 @@ word_t eval(int p, int q, bool *success)
   else
   {
     /*
-    find 主运算符
-    非运算符的token不是主运算符.
-    出现在一对括号中的token不是主运算符. 注意到这里不会出现有括号包围整个表达式的情况, 因为这种情况已经在check_parentheses()相应的if块中被处理了.
-    主运算符的优先级在表达式中是最低的. 这是因为主运算符是最后一步才进行的运算符.
-    当有多个运算符的优先级都是最低时, 根据结合性, 最后被结合的运算符才是主运算符. 一个例子是1 + 2 + 3, 它的主运算符应该是右边的+.
+    找主运算符
+    1.非运算符的token不是主运算符.
+    2.出现在一对括号中的token不是主运算符. 注意到这里不会出现有括号包围整个表达式的情况, 因为这种情况已经在check_parentheses()相应的if块中被处理了.
+    3.主运算符的优先级在表达式中是最低的. 这是因为主运算符是最后一步才进行的运算符.
+    4.当有多个运算符的优先级都是最低时, 根据结合性, 最后被结合的运算符才是主运算符. 一个例子是1 + 2 + 3, 它的主运算符应该是右边的+.
     */
     int pos = -1;
     int min_priority = MAXPRIORITY;
