@@ -227,7 +227,7 @@ static int get_priority(int op)
 word_t eval(int p, int q, bool *success)
 {
 
-#if 1
+#if 0
   printf("eval:  ");
   for (int i = p; i <= q; i++)
   {
@@ -243,13 +243,12 @@ word_t eval(int p, int q, bool *success)
     printf("p > q, p = %d,q = %d\n", p, q);
 #endif
   }
-  else if (p == q)
+  else if (p == q && success)
   {
     /* Single token.
      * For now this token should be a number.
      * Return the value of the number.
      */
-    if (success)
     {
       switch (tokens[p].type)
       {
@@ -286,17 +285,20 @@ word_t eval(int p, int q, bool *success)
         return num;
       }
       break;
+      default:
+        *success = false;
+        break;
       }
     }
   }
-  else if (check_parentheses(p, q))
+  else if (check_parentheses(p, q) && success)
   {
     /* The expression is surrounded by a matched pair of parentheses.
      * If that is the case, just throw away the parentheses.
      */
     return eval(p + 1, q - 1, success);
   }
-  else
+  else if (success)
   {
     /*
     找主运算符
