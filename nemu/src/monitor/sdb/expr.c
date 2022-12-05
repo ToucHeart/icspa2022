@@ -91,7 +91,7 @@ typedef struct token
   char str[32];
 } Token;
 
-static Token tokens[32] __attribute__((used)) = {};
+static Token tokens[8192] __attribute__((used)) = {};
 static int nr_token __attribute__((used)) = 0;
 
 static bool make_token(char *e)
@@ -128,7 +128,7 @@ static bool make_token(char *e)
           break; // ignore spaces
         case '*':
         {
-          assert(substr_len <= 32);
+          // assert(substr_len <= 32);
           if (nr_token == 0 || (tokens[nr_token - 1].type != ')' && tokens[nr_token - 1].type != REG && tokens[nr_token - 1].type != 'h' && tokens[nr_token - 1].type != 'd'))
           {
             tokens[nr_token].type = DREF;
@@ -166,7 +166,7 @@ static bool make_token(char *e)
         case TK_EQ:
         case REG:
         {
-          assert(substr_len <= 32);
+          // assert(substr_len <= 32);
           tokens[nr_token].type = rules[i].token_type;
           memcpy(tokens[nr_token].str, substr_start, substr_len); // record str to tokens.str
           nr_token++;
