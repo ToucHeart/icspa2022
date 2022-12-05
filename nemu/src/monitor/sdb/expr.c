@@ -31,7 +31,7 @@ enum
   AND,
   REG,
   DREF,
-
+  MINUS,
   /* TODO: Add more token types */
 
 };
@@ -141,8 +141,21 @@ static bool make_token(char *e)
           nr_token++;
         }
         break;
-        case '+':
         case '-':
+        {
+          if (nr_token == 0 || (tokens[nr_token - 1].type != ')' && tokens[nr_token - 1].type != REG && tokens[nr_token - 1].type != 'h' && tokens[nr_token - 1].type != 'd'))
+          {
+            tokens[nr_token].type = MINUS; // minus,-a
+          }
+          else
+          {
+            tokens[nr_token].type = '-'; // subtract,a-b
+          }
+          memcpy(tokens[nr_token].str, substr_start, substr_len); // record str to tokens.str
+          nr_token++;
+        }
+        break;
+        case '+':
         case '/':
         case '(':
         case ')':
@@ -205,21 +218,27 @@ bool check_parentheses(int p, int q)
 }
 #define MAXPRIORITY (10)
 
+static const int OFFSET = 10;
+
 static int get_priority(int op)
 {
   switch (op)
   {
+  case MINUS:
+    return MAXPRIORITY - (OFFSET - 5);
+  case DREF:
+    return MAXPRIORITY - (OFFSET - 4);
   case '*':
   case '/':
-    return MAXPRIORITY - 1;
+    return MAXPRIORITY - (OFFSET - 3);
   case '+':
   case '-':
-    return MAXPRIORITY - 2;
+    return MAXPRIORITY - (OFFSET - 2);
   case TK_EQ:
   case TK_NEQ:
-    return MAXPRIORITY - 3;
+    return MAXPRIORITY - (OFFSET - 1);
   case AND:
-    return MAXPRIORITY - 4;
+    return MAXPRIORITY - OFFSET;
   default:
     assert(0);
   }
@@ -307,7 +326,7 @@ word_t eval(int p, int q, bool *success)
     3.主运算符的优先级在表达式中是最低的. 这是因为主运算符是最后一步才进行的运算符.
     4.当有多个运算符的优先级都是最低时, 根据结合性, 最后被结合的运算符才是主运算符. 一个例子是1 + 2 + 3, 它的主运算符应该是右边的+.
     */
-    int pos = -1;
+    int pos = p;
     int min_priority = MAXPRIORITY;
     int in_bracket = 0;
     for (int i = p; i <= q; ++i)
@@ -321,6 +340,8 @@ word_t eval(int p, int q, bool *success)
       case TK_EQ:
       case TK_NEQ:
       case AND:
+      case DREF:
+      case MINUS:
       {
         if (in_bracket == 0 && get_priority(tokens[i].type) <= min_priority)
         {
@@ -338,49 +359,52 @@ word_t eval(int p, int q, bool *success)
       case 'd':
       case 'h':
       case REG:
-      case DREF:
         break;
       default:
         assert(0);
         break;
       }
     }
-    if (pos == -1) // pointer dref
+
+    if (tokens[pos].type == DREF)
     {
-      if (tokens[p].type == DREF)
-      {
-        word_t addr = eval(p + 1, q, success);
-        return getnum(addr);
-      }
-      else
-        assert(0);
+      word_t addr = eval(p + 1, q, success);
+      return getnum(addr);
     }
-    word_t val1 = eval(p, pos - 1, success);
-    word_t val2 = eval(pos + 1, q, success);
+    else if (tokens[pos].type == MINUS)
+    {
+      word_t val = eval(p + 1, q, success);
+      return -val;
+    }
+    else
+    {
+      word_t val1 = eval(p, pos - 1, success);
+      word_t val2 = eval(pos + 1, q, success);
 
 #if 0
     printf("%u %s %u\n", val1, tokens[pos].str, val2);
 #endif
-    switch (tokens[pos].type)
-    {
-    case '+':
-      return val1 + val2;
-    case '-':
-      return val1 - val2;
-    case '*':
-      return val1 * val2;
-    case '/':
-      assert(val2 != 0);
-      return val1 / val2;
-    case TK_EQ:
-      return val1 == val2;
-    case TK_NEQ:
-      return val1 != val2;
-    case AND:
-      return val1 && val2;
-    default:
-      assert(0);
-      break;
+      switch (tokens[pos].type)
+      {
+      case '+':
+        return val1 + val2;
+      case '-':
+        return val1 - val2;
+      case '*':
+        return val1 * val2;
+      case '/':
+        assert(val2 != 0);
+        return val1 / val2;
+      case TK_EQ:
+        return val1 == val2;
+      case TK_NEQ:
+        return val1 != val2;
+      case AND:
+        return val1 && val2;
+      default:
+        assert(0);
+        break;
+      }
     }
   }
   return 0;
