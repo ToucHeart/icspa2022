@@ -47,9 +47,9 @@ static struct rule
      */
 
     {"\\*", '*'},                 // mul,DREF
-    {"/", '/'},                   // div
+    {"/", '/'},                   // division
     {"\\+", '+'},                 // plus
-    {"-", '-'},                   // minus
+    {"-", '-'},                   // minus,subtract
     {"==", TK_EQ},                // equal
     {"!=", TK_NEQ},               //!=
     {"&&", AND},                  // and
@@ -137,7 +137,8 @@ static bool make_token(char *e)
           {
             tokens[nr_token].type = '*';
           }
-          memcpy(tokens[nr_token++].str, substr_start, substr_len); // record str to tokens.str
+          memcpy(tokens[nr_token].str, substr_start, substr_len); // record str to tokens.str
+          nr_token++;
         }
         break;
         case '+':
@@ -151,10 +152,13 @@ static bool make_token(char *e)
         case TK_NEQ:
         case TK_EQ:
         case REG:
+        {
           assert(substr_len <= 32);
           tokens[nr_token].type = rules[i].token_type;
-          memcpy(tokens[nr_token++].str, substr_start, substr_len); // record str to tokens.str
-          break;
+          memcpy(tokens[nr_token].str, substr_start, substr_len); // record str to tokens.str
+          nr_token++;
+        }
+        break;
         default:
           assert(0);
           break;
