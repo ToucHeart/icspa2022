@@ -31,7 +31,7 @@ uint8_t *guest_to_host(paddr_t paddr)
 paddr_t host_to_guest(uint8_t *haddr) { return haddr - pmem + CONFIG_MBASE; }
 uint32_t getnum(paddr_t paddr)
 {
-  assert(paddr >= CONFIG_MBASE && (paddr / 2) < CONFIG_MBASE);
+  assert(paddr >= PMEM_LEFT && paddr <= PMEM_RIGHT);
   uint32_t val = *(uint32_t *)(pmem + paddr - CONFIG_MBASE);
   return val;
 }
@@ -85,6 +85,6 @@ void paddr_write(paddr_t addr, int len, word_t data)
     pmem_write(addr, len, data);
     return;
   }
-  IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return );
+  IFDEF(CONFIG_DEVICE, mmio_write(addr, len, data); return);
   out_of_bound(addr);
 }

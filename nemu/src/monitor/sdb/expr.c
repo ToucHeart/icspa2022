@@ -174,19 +174,19 @@ static bool make_token(char *e)
 }
 bool check_match(int p, int q)
 {
-  int bracket_num = 0;
+  int left_bracket_num = 0;
   for (int i = p; i <= q; i++)
   {
     if (tokens[i].type == '(')
-      bracket_num++;
+      left_bracket_num++;
     else if (tokens[i].type == ')')
     {
-      bracket_num--;
-      if (bracket_num < 0)
+      left_bracket_num--;
+      if (left_bracket_num < 0)
         return false;
     }
   }
-  if (bracket_num != 0)
+  if (left_bracket_num != 0)
     return false;
   return true;
 }
