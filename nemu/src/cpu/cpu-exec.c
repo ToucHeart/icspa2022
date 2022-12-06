@@ -83,7 +83,7 @@ static void execute(uint64_t n)
   for (; n > 0; n--)
   {
     exec_once(&s, cpu.pc);
-    g_nr_guest_inst++;
+    g_nr_guest_inst++; // 记录客户指令的计数器加1
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING)
       break;
