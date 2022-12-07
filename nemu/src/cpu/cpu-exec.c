@@ -51,7 +51,7 @@ static void exec_once(Decode *s, vaddr_t pc)
 {
   s->pc = pc;
   s->snpc = pc;
-  isa_exec_once(s);
+  isa_exec_once(s); // 执行一条指令
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
   char *p = s->logbuf;
@@ -82,8 +82,8 @@ static void execute(uint64_t n)
   Decode s;
   for (; n > 0; n--)
   {
-    exec_once(&s, cpu.pc);
-    g_nr_guest_inst++; // 记录客户指令的计数器加1
+    exec_once(&s, cpu.pc); // 循环执行指令
+    g_nr_guest_inst++;     // 记录客户指令的计数器加1
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING)
       break;
