@@ -78,9 +78,6 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
     immS();
     break;
   }
-#if 1
-  printf("dest is %d\n", *dest);
-#endif
 }
 
 static int decode_exec(Decode *s)
