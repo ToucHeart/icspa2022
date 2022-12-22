@@ -78,6 +78,12 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
     immS();
     break;
   }
+#if 1
+  printf("dest is %d\n", *dest);
+  printf("src1 is %d\n", *src1);
+  printf("src2 is %d\n", *src2);
+  printf("imm is %d\n", *imm);
+#endif
 }
 
 static int decode_exec(Decode *s)
