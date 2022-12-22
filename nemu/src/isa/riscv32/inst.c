@@ -80,8 +80,8 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   }
 #if 1
   printf("dest is %d\n", *dest);
-  printf("src1 is %d\n", rs1);
-  printf("src2 is %d\n", rs2);
+  printf("rs1 is %d\n", rs1);
+  printf("rs2 is %d\n", rs2);
   printf("imm is %d\n", *imm);
 #endif
 }
