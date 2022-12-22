@@ -85,6 +85,9 @@ static int decode_exec(Decode *s)
   int dest = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
   s->dnpc = s->snpc; // dnpc==snpc==pc+4
+#if 1
+  printf("pc is %x\n", s->pc);
+#endif
 
 #define INSTPAT_INST(s) ((s)->isa.inst.val)
 #define INSTPAT_MATCH(s, name, type, ... /* execute body */)           \
