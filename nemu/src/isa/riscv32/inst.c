@@ -107,6 +107,8 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
   printf("dest is %d\n", *dest);
   printf("rs1 is %d\n", rs1);
   printf("rs2 is %d\n", rs2);
+  printf("src1 is %x\n", *src1);
+  printf("src2 is %x\n", *src2);
   printf("imm is %d\n", *imm);
 #endif
 }
