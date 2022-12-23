@@ -20,7 +20,7 @@
 
 static inline int check_reg_idx(int idx)
 {
-#if 1
+#if 0
   printf("idx is %d\n", idx);
 #endif
   IFDEF(CONFIG_RT_CHECK, assert(idx >= 0 && idx < 32));
