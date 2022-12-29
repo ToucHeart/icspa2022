@@ -58,14 +58,6 @@ int sprintf(char *out, const char *fmt, ...)
     else
       out[count++] = c;
   }
-#if 0
-  printf("str is:  ");
-  for (int i = 0; i < count; ++i)
-  {
-    putc(out[i], stdout);
-  }
-  printf("\n");
-#endif
   out[count] = '\0';
   return count;
 }
