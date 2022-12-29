@@ -48,7 +48,7 @@ int sprintf(char *out, const char *fmt, ...)
       case 's':
         cp = va_arg(ap, char *);
         memcpy(out + count, cp, strlen(cp));
-        count+=strlen(cp);
+        count += strlen(cp);
         break;
       default:;
         break;
@@ -58,6 +58,14 @@ int sprintf(char *out, const char *fmt, ...)
     else
       out[count++] = c;
   }
+#if 1
+  printf("str is:  ");
+  for (int i = 0; i < count; ++i)
+  {
+    putc(out[i], stdout);
+  }
+  printf("\n");
+#endif
   return count;
 }
 
