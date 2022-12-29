@@ -24,7 +24,7 @@ word_t vaddr_ifetch(vaddr_t addr, int len)
 word_t vaddr_read(vaddr_t addr, int len)
 {
   word_t tmp = paddr_read(addr, len);
-#if 1
+#if 0
   printf("read data is %08x\n", tmp);
 #endif
   return tmp;
