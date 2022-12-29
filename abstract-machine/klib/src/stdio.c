@@ -66,6 +66,7 @@ int sprintf(char *out, const char *fmt, ...)
   }
   printf("\n");
 #endif
+  out[count] = '\0';
   return count;
 }
 
