@@ -25,7 +25,7 @@ word_t vaddr_read(vaddr_t addr, int len)
 {
   word_t tmp = paddr_read(addr, len);
 #if 1
-  printf("read data is %x\n", tmp);
+  printf("read data is %8x\n", tmp);
 #endif
   return tmp;
 }
