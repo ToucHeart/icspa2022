@@ -58,7 +58,7 @@ int sprintf(char *out, const char *fmt, ...)
     else
       out[count++] = c;
   }
-#if 0
+#if 1
   printf("str is:  ");
   for (int i = 0; i < count; ++i)
   {
