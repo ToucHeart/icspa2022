@@ -103,7 +103,7 @@ static void decode_operand(Decode *s, int *dest, word_t *src1, word_t *src2, wor
     immB();
     break;
   }
-#if 1
+#if 0
   printf("dest is %d\n", *dest);
   printf("rs1 is %d\n", rs1);
   printf("rs2 is %d\n", rs2);
@@ -118,7 +118,7 @@ static int decode_exec(Decode *s)
   int dest = 0;
   word_t src1 = 0, src2 = 0, imm = 0;
   s->dnpc = s->snpc; // dnpc==snpc==pc+4
-#if 1
+#if 0
   printf("pc is %x\n", s->pc);
 #endif
 
