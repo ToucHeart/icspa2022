@@ -54,7 +54,7 @@ static void exec_once(Decode *s, vaddr_t pc)
   isa_exec_once(s); // 执行一条指令
   cpu.pc = s->dnpc;
 #ifdef CONFIG_ITRACE
-  char *p = s->logbuf;
+  char *p = s->logbuf; // itrace会输出指令的PC, 二进制表示以及反汇编结果,
   p += snprintf(p, sizeof(s->logbuf), FMT_WORD ":", s->pc);
   int ilen = s->snpc - s->pc;
   int i;
