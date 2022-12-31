@@ -67,11 +67,11 @@ static char last_instr[RINGBUF_LENGTH];
 static void print_instr_ringbuf(int state)
 {
 #ifdef CONFIG_ITRACE_COND
-  if (state)
-  {
-    strncpy(RINGBUF_ELEMENT(ringbuf_end), last_instr, RINGBUF_LENGTH);
-    ringbuf_end++;
-  }
+  // if (state)
+  // {
+  //   strncpy(RINGBUF_ELEMENT(ringbuf_end), last_instr, RINGBUF_LENGTH);
+  //   ringbuf_end++;
+  // }
 
   printf(ANSI_FMT("====== The nearest %d instructions ======\n", ANSI_FG_RED), RINGBUF_LINES);
   for (int i = ringbuf_end >= RINGBUF_LINES ? ringbuf_end : 0;
