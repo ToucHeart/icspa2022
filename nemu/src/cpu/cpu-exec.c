@@ -17,6 +17,7 @@
 #include <cpu/decode.h>
 #include <cpu/difftest.h>
 #include <locale.h>
+#include <../include/utils.h>
 
 /* The assembly code of instructions executed is only output to the screen
  * when the number of instructions executed is less than this value.
@@ -32,6 +33,16 @@ static bool g_print_step = false;
 
 void device_update();
 
+#ifdef CONFIG_ITRACE_COND
+
+#define RINGBUF_LINES 128
+#define RINGBUF_LENGTH 128
+char instr_ringbuf[RINGBUF_LINES][RINGBUF_LENGTH];
+long ringbuf_end = 0;
+#define RINGBUF_ELEMENT(index) (instr_ringbuf[index % RINGBUF_LINES])
+
+#endif
+
 static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
 {
 #ifdef CONFIG_ITRACE_COND
@@ -39,12 +50,37 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
   {
     log_write("%s\n", _this->logbuf);
   }
+  strncpy(RINGBUF_ELEMENT(ringbuf_end), _this->logbuf, RINGBUF_LENGTH);
+  ringbuf_end++;
 #endif
   if (g_print_step)
   {
     IFDEF(CONFIG_ITRACE, puts(_this->logbuf));
   }
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
+}
+
+#ifdef CONFIG_ITRACE_COND
+static char last_instr[RINGBUF_LENGTH];
+#endif
+
+static void print_instr_ringbuf(int state)
+{
+#ifdef CONFIG_ITRACE_COND
+  if (state)
+  {
+    strncpy(RINGBUF_ELEMENT(ringbuf_end), last_instr, RINGBUF_LENGTH);
+    ringbuf_end++;
+  }
+
+  printf(ANSI_FMT("====== The nearest %d instructions ======\n", ANSI_FG_RED), RINGBUF_LINES);
+  for (int i = ringbuf_end >= RINGBUF_LINES ? ringbuf_end : 0;
+       i < ringbuf_end + (ringbuf_end >= RINGBUF_LINES ? RINGBUF_LINES : 0);
+       ++i)
+  {
+    printf(ANSI_FMT("%s\n", ANSI_FG_BLACK), RINGBUF_ELEMENT(i));
+  }
+#endif
 }
 
 static void exec_once(Decode *s, vaddr_t pc)
@@ -83,7 +119,12 @@ static void execute(uint64_t n)
   for (; n > 0; n--)
   {
     exec_once(&s, cpu.pc); // 循环执行指令
-    g_nr_guest_inst++;     // 记录客户指令的计数器加1
+
+#ifdef CONFIG_ITRACE_COND
+    strncpy(last_instr, s.logbuf, RINGBUF_LENGTH);
+#endif
+
+    g_nr_guest_inst++; // 记录客户指令的计数器加1
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING)
       break;
@@ -106,6 +147,7 @@ static void statistic()
 void assert_fail_msg()
 {
   isa_reg_display();
+  print_instr_ringbuf(1);
   statistic();
 }
 
