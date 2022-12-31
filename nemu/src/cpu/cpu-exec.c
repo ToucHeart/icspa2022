@@ -60,19 +60,9 @@ static void trace_and_difftest(Decode *_this, vaddr_t dnpc)
   IFDEF(CONFIG_DIFFTEST, difftest_step(_this->pc, dnpc));
 }
 
-#ifdef CONFIG_ITRACE_COND
-static char last_instr[RINGBUF_LENGTH];
-#endif
-
 static void print_instr_ringbuf(int state)
 {
 #ifdef CONFIG_ITRACE_COND
-  // if (state)
-  // {
-  //   strncpy(RINGBUF_ELEMENT(ringbuf_end), last_instr, RINGBUF_LENGTH);
-  //   ringbuf_end++;
-  // }
-
   printf(ANSI_FMT("====== The nearest %d instructions ======\n", ANSI_FG_RED), RINGBUF_LINES);
   for (int i = ringbuf_end >= RINGBUF_LINES ? ringbuf_end : 0;
        i < ringbuf_end + (ringbuf_end >= RINGBUF_LINES ? RINGBUF_LINES : 0);
@@ -119,12 +109,7 @@ static void execute(uint64_t n)
   for (; n > 0; n--)
   {
     exec_once(&s, cpu.pc); // 循环执行指令
-
-#ifdef CONFIG_ITRACE_COND
-    strncpy(last_instr, s.logbuf, RINGBUF_LENGTH);
-#endif
-
-    g_nr_guest_inst++; // 记录客户指令的计数器加1
+    g_nr_guest_inst++;     // 记录客户指令的计数器加1
     trace_and_difftest(&s, cpu.pc);
     if (nemu_state.state != NEMU_RUNNING)
       break;
